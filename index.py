@@ -1,12 +1,15 @@
 import json
 import datetime
-
+from urllib.parse import parse_qs
 
 def handler(event, context):
 
+    query = parse_qs(event.get('body') or '')
+
     # SlackのEvent APIの認証
-    if "challenge" in event:
-        return event["challenge"]
+    challenge = query.get('challenge', [''])[0]
+    if challenge
+        return challenge
 
     data = {
         'output': 'Hello World',
