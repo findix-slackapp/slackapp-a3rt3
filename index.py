@@ -4,15 +4,27 @@ from urllib.parse import parse_qs
 
 def handler(event, context):
 
-    query = parse_qs(event.get('body') or '')
+    # json処理
+    if 'body' in event:
+        body = json.loads(event.get('body'))
+    elif 'token' in event:
+        body = event
+    else:
+        logger.error('unexpected event format')
+        return {'statusCode': 500, 'body': 'error:unexpected event format'}
 
     # SlackのEvent APIの認証
-    challenge = query.get('challenge', [''])[0]
-    if challenge:
-        return challenge
+    if 'challenge' in body:
+        challenge = body.get('challenge')
+        return {
+            'isBase64Encoded': 'true',
+            'statusCode': 200,
+            'headers': {},
+            'body': challenge
+        }
 
     data = {
-        'output': event,
+        'output': 'hellow',
         'timestamp': datetime.datetime.utcnow().isoformat()
     }
     return {'statusCode': 200,
