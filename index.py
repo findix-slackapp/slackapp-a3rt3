@@ -8,7 +8,7 @@ def handler(event, context):
 
     # SlackのEvent APIの認証
     challenge = query.get('challenge', [''])[0]
-    if challenge
+    if challenge:
         return challenge
 
     data = {
