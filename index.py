@@ -12,7 +12,7 @@ def handler(event, context):
         return challenge
 
     data = {
-        'output': challenge,
+        'output': query,
         'timestamp': datetime.datetime.utcnow().isoformat()
     }
     return {'statusCode': 200,
