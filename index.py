@@ -2,6 +2,8 @@ import json
 import logging
 import urllib.request
 import os
+import pya3rt
+import re
 
 print('Loading function... ')
 logger = logging.getLogger()
@@ -14,6 +16,8 @@ def handler(event, context):
     HOOK_KEYWORD = os.environ['HOOK_KEYWORD']
     REPLY_WORD = os.environ['REPLY_WORD']
     BOT_NAME = os.environ['BOT_NAME']
+    BOT_ID = os.environ['BOT_ID']
+    A3RT_API_KEY = os.environ['A3RT_API_KEY']
 
     #受信したjsonをLogsに出力
     logging.info(json.dumps(event))
@@ -38,9 +42,10 @@ def handler(event, context):
             'headers': {},
             'body': challenge
         }
-    logger.info('body: %s', body)
     #SlackMessageに特定のキーワードが入っていたときの処理
-    if body.get('event').get('text') == HOOK_KEYWORD:
+    # if body.get('event').get('text') == HOOK_KEYWORD:
+    m = re.match('<@%s>(.+)' % BOT_ID, body.get('event').get('text'))
+    if m:
         logger.info('hit!: %s', HOOK_KEYWORD)
         url = 'https://slack.com/api/chat.postMessage'
         headers = {
@@ -50,7 +55,7 @@ def handler(event, context):
         data = {
             'token': OAUTH_TOKEN,
             'channel': body.get('event').get('channel'),
-            'text': REPLY_WORD,
+            'text': m.group(1),
             'username': BOT_NAME
         }
         # POST処理　
