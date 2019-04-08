@@ -6,7 +6,7 @@ phases:
 
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
-      - pip install pya3rt
+      - pip install -t . pya3rt
 
   pre_build:
     commands:
@@ -27,5 +27,4 @@ phases:
 artifacts:
   type: zip
   files:
-    - template-export.yml
-    - template-configuration.json
+    - "**/*"
