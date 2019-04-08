@@ -38,7 +38,8 @@ def handler(event, context):
             'headers': {},
             'body': challenge
         }
-    #SlackMessageに特定のキーワードが入っていたときの処理（poopに反応して処理します）
+    logger.info('body: %s', body)
+    #SlackMessageに特定のキーワードが入っていたときの処理
     if body.get('event').get('text') == HOOK_KEYWORD:
         logger.info('hit!: %s', HOOK_KEYWORD)
         url = 'https://slack.com/api/chat.postMessage'
