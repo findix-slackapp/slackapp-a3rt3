@@ -13,8 +13,6 @@ def handler(event, context):
     #getenv
     OAUTH_TOKEN = os.environ['OAUTH_TOKEN']
     BOT_TOKEN = os.environ['BOT_TOKEN']
-    HOOK_KEYWORD = os.environ['HOOK_KEYWORD']
-    REPLY_WORD = os.environ['REPLY_WORD']
     BOT_NAME = os.environ['BOT_NAME']
     BOT_ID = os.environ['BOT_ID']
     A3RT_API_KEY = os.environ['A3RT_API_KEY']
@@ -43,19 +41,22 @@ def handler(event, context):
             'body': challenge
         }
     #SlackMessageに特定のキーワードが入っていたときの処理
-    # if body.get('event').get('text') == HOOK_KEYWORD:
     m = re.match('<@%s>(.+)' % BOT_ID, body.get('event').get('text'))
     if m:
-        logger.info('hit!: %s', HOOK_KEYWORD)
+        msg = m.group(1)
+        logger.info('hit!: %s', msg)
         url = 'https://slack.com/api/chat.postMessage'
         headers = {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer {0}'.format(BOT_TOKEN)
         }
+        apikey = A3RT_API_KEY
+        client = pya3rt.TalkClient(apikey)
+        reply_message = client.talk(msg)
         data = {
             'token': OAUTH_TOKEN,
             'channel': body.get('event').get('channel'),
-            'text': m.group(1),
+            'text': reply_message['results'][0]['reply'],
             'username': BOT_NAME
         }
         # POST処理　
